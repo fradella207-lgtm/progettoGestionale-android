@@ -22,7 +22,9 @@ import {
   googleProvider, 
   signInWithPopup, 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
+  sendPasswordReset,
+  getFirebaseAuthErrorMessage
 } from '../../firebase';
 import { useSwipeBack } from '../../hooks/useSwipeBack';
 
@@ -561,17 +563,21 @@ export const AuthLoginModal: React.FC<AuthLoginModalProps> = ({
 
         {/* 3. FORGOT PASSWORD FORM */}
         {authMode === 'forgot' && (
-          <form onSubmit={(e) => {
+          <form onSubmit={async (e) => {
             e.preventDefault();
             setIsLoading(true);
-            setTimeout(() => {
-              setIsLoading(false);
-              setSuccessMessage(`Email di ripristino inviata a ${email || 'indirizzo specificato'}`);
+            setErrorMessage(null);
+            setSuccessMessage(null);
+            const res = await sendPasswordReset(email);
+            setIsLoading(false);
+            if (res.success) {
+              setSuccessMessage(res.message);
               setTimeout(() => {
                 setAuthMode('login');
-                setSuccessMessage(null);
-              }, 2000);
-            }, 800);
+              }, 4000);
+            } else {
+              setErrorMessage(res.message);
+            }
           }} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-bold text-[#0f172a] uppercase tracking-wider">La tua Email registrata</label>
@@ -589,22 +595,28 @@ export const AuthLoginModal: React.FC<AuthLoginModalProps> = ({
                   className="w-full pl-10 pr-3.5 py-2.5 bg-[#f8fafc] border border-[#cbd5e1] focus:bg-white text-xs sm:text-sm rounded-xl focus:border-[#2563eb] focus:ring-2 focus:ring-blue-100 outline-hidden transition-all"
                 />
               </div>
+              <p className="text-[11px] text-slate-500 mt-1">
+                Riceverai un link sicuro di Firebase per reimpostare la tua password personale in pochi secondi.
+              </p>
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => setAuthMode('login')}
-                className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-2"
+                onClick={() => {
+                  setAuthMode('login');
+                  setErrorMessage(null);
+                }}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-2 cursor-pointer"
               >
                 Torna al Login
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs"
+                className="bg-[#2563eb] hover:bg-[#1d4ed8] active:scale-95 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs cursor-pointer transition-all disabled:opacity-50"
               >
-                Invia Link di Ripristino
+                {isLoading ? 'Invio in corso...' : 'Invia Link di Ripristino'}
               </button>
             </div>
           </form>

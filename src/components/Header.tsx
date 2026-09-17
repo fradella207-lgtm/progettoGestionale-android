@@ -8,7 +8,9 @@ import {
   Moon,
   Globe,
   Sparkles,
-  Crown
+  Crown,
+  Warehouse,
+  Fuel
 } from 'lucide-react';
 import { Vehicle, AppNotification, AppSettings, UserAccount, UserTier, ProFeatureName } from '../types';
 import { TopRightMenu } from './TopRightMenu';
@@ -21,7 +23,9 @@ interface HeaderProps {
   settings: AppSettings;
   account: UserAccount;
   userTier?: UserTier;
+  vehiclesCount?: number;
   onNavigateGarage: () => void;
+  onNavigateStations?: () => void;
   onOpenAddCar: () => void;
   onOpenEditCar?: () => void;
   onOpenSettings: () => void;
@@ -43,7 +47,9 @@ export const Header: React.FC<HeaderProps> = ({
   settings,
   account,
   userTier = 'FREE',
+  vehiclesCount,
   onNavigateGarage,
+  onNavigateStations,
   onOpenAddCar,
   onOpenEditCar,
   onOpenSettings,
@@ -124,6 +130,54 @@ export const Header: React.FC<HeaderProps> = ({
                 {getTranslation(lang, 'header_garage_subtitle')}
               </p>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* CENTER RESPONSIVE NAVIGATION (TABLETS & DESKTOP) */}
+      <div className="hidden md:flex items-center gap-1.5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/90 shadow-2xs">
+        <button
+          type="button"
+          id="nav-tab-garage"
+          onClick={onNavigateGarage}
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            currentView === 'garage'
+              ? 'bg-white text-slate-900 shadow-xs'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/50'
+          }`}
+        >
+          <Warehouse className="w-3.5 h-3.5 text-blue-600" />
+          <span>{getTranslation(lang, 'nav_garage')}</span>
+          {typeof vehiclesCount === 'number' && vehiclesCount > 0 && (
+            <span className="text-[10px] bg-blue-100 text-blue-800 font-extrabold px-1.5 py-0.2 rounded-full">
+              {vehiclesCount}
+            </span>
+          )}
+        </button>
+
+        {onNavigateStations && (
+          <button
+            type="button"
+            id="nav-tab-stations"
+            onClick={onNavigateStations}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              currentView === 'stations'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/50'
+            }`}
+          >
+            <Fuel className="w-3.5 h-3.5 text-emerald-600" />
+            <span>{getTranslation(lang, 'nav_stations')}</span>
+            <span className="text-[9px] bg-emerald-100 text-emerald-900 border border-emerald-300/80 font-black px-1.5 py-0.2 rounded-md">
+              LIVE
+            </span>
+          </button>
+        )}
+
+        {currentView === 'detail' && selectedVehicle && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50/80 border border-blue-200/70 text-blue-950 text-xs font-extrabold">
+            <Car className="w-3.5 h-3.5 text-blue-600" />
+            <span className="max-w-[140px] truncate">{selectedVehicle.brand} {selectedVehicle.model}</span>
           </div>
         )}
       </div>

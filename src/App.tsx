@@ -971,8 +971,13 @@ export default function App() {
         settings={settings}
         account={account}
         userTier={userTier}
+        vehiclesCount={vehicles.length}
         onNavigateGarage={() => {
           setCurrentView('garage');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateStations={() => {
+          setCurrentView('stations');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenAddCar={handleOpenAddCarRequest}
@@ -991,7 +996,7 @@ export default function App() {
       />
 
       {/* 2. MAIN VIEW (HOME GARAGE, VEHICLE DETAIL, OR FUEL MAP) */}
-      <main className="flex-1 flex flex-col pb-16 overflow-hidden">
+      <main className="flex-1 flex flex-col pb-24 sm:pb-20 md:pb-16 overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           {currentView === 'stations' ? (
             <motion.div 

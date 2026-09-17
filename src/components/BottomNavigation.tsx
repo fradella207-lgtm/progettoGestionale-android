@@ -14,7 +14,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   vehiclesCount
 }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 pointer-events-none flex justify-center font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="fixed bottom-0 left-0 right-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 pointer-events-none flex justify-center md:hidden font-['Plus_Jakarta_Sans',sans-serif]">
       <nav 
         aria-label="Navigazione principale" 
         className="pointer-events-auto w-full max-w-xs sm:max-w-sm bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 shadow-2xl shadow-slate-950/40 rounded-full p-1.5 transition-all text-white select-none"
